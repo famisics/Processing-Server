@@ -14,15 +14,15 @@ wss.on('connection', (ws) => {
   console.log('[wss] ローカルサーバーが接続されました');
 
   ws.on('message', (message) => {
-    console.log('[LOCAL>WSS]','受信' , message.toString('utf8'));
+    console.log('[LOCAL>WSS]','受信' , message);
     clients.forEach(client => {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
         client.send('deliver', message);
-        console.log('[WSS>LOCAL]', '配信', message.toString('utf8'));
+        console.log('[WSS>LOCAL]', '配信', message);
       }
       if (client == ws && client.readyState === WebSocket.OPEN) {
         client.send('success', message);
-        console.log('[WSS>LOCAL]', '成功を通知', message.toString('utf8'));
+        console.log('[WSS>LOCAL]', '成功を通知', message);
       }
     });
   });
