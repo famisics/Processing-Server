@@ -14,8 +14,10 @@ wss.on('connection', function connection(ws) {
     // 受け取ったメッセージを全クライアントに送信
     wss.clients.forEach(function each(client) {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message);
-        client.send('相手だけに届いてる？:'+message);
+        client.send('[Websocket:RECEIVED] '+message);
+      }
+      if (client == ws && client.readyState === WebSocket.OPEN) {
+        client.send('[Websocket:SENT]:'+message);
       }
     });
   });
@@ -23,13 +25,7 @@ wss.on('connection', function connection(ws) {
   ws.send('Welcome to the WebSocket server!');
 });
 
-// ExpressアプリケーションでCSPヘッダーを設定
-app.use((req, res, next) => {
-  res.setHeader('Content-Security-Policy', 'connect-src ws://localhost:8080');
-  next();
-});
-
 // サーバーを起動
-server.listen(8080, () => {
-  console.log('WebSocket server is running on ws://localhost:8080');
+server.listen(443, () => {
+  console.log('WebSocket server is running');
 });
