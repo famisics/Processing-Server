@@ -31,6 +31,6 @@ wss.on('connection', (ws) => {
   });
 });
 
-server.listen(5000, () => {
-  console.log(`[wss] 公開サーバーが無事起動しました localhost:5000`);
+server.listen(443, () => {
+  console.log(`[wss] 公開サーバーが無事起動しました localhost:443`);
 });
