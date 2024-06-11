@@ -1,10 +1,12 @@
+const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 
 console.log('[wss] 公開サーバーを起動しています');
 
 // HTTPサーバーの設定
-const server = http.createServer();
+const app = express();
+const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 let clients = [];
@@ -31,6 +33,7 @@ wss.on('connection', (ws) => {
   });
 });
 
-server.listen(443, () => {
-  console.log(`[wss] 公開サーバーが無事起動しました localhost:443`);
+const PORT = process.env.PORT || 80;
+server.listen(PORT, () => {
+  console.log(`[wss] 公開サーバーが ${PORT} で無事起動しました`);
 });
