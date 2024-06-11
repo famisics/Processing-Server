@@ -1,7 +1,7 @@
 const http = require('http');
 const WebSocket = require('ws');
 
-console.log('[wss] wss server is starting...');
+console.log('[wss] 公開サーバーを起動しています');
 
 // HTTPサーバーの設定
 const server = http.createServer();
@@ -11,24 +11,28 @@ let clients = [];
 
 wss.on('connection', (ws) => {
   clients.push(ws);
-  console.log('[wss] Local server Connected');
+  console.log('[wss] ローカルサーバーが接続されました');
 
   ws.on('message', (message) => {
-    console.log('[LOCAL>WSS]', message);
+    console.log('[LOCAL>WSS]','受信' , message);
     clients.forEach(client => {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message);
-        console.log('[WSS>LOCAL]', message);
+        client.send('deliver', message);
+        console.log('[WSS>LOCAL]', '配信', message);
+      }
+      if (client == ws && client.readyState === WebSocket.OPEN) {
+        client.send('success', message);
+        console.log('[WSS>LOCAL]', '成功を通知', message);
       }
     });
   });
 
   ws.on('close', () => {
     clients = clients.filter(client => client !== ws);
-    console.log('[wss] Local server Disconnected');
+    console.log('[wss] ローカルサーバーが切断されました');
   });
 });
 
 server.listen(443, () => {
-  console.log(`[wss] wss server is running on port 443`);
+  console.log(`[wss] 公開サーバーが無事起動しました`);
 });

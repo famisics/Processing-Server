@@ -2,14 +2,14 @@ const WebSocket = require('ws');
 // ローカルサーバーのセットアップ
 const localWss = new WebSocket.Server({ port: 8080 });
 // 公開サーバーへの接続
-const publicWs = new WebSocket('wss://proc.uiro.dev:443');
+const publicWs = new WebSocket('wss://proc.uiro.dev');
 
 // ローカルサーバーの処理
 localWss.on('connection', (ws) => {
   console.log('[local] Processingクライアントが接続されました');
 
   ws.on('message', (message) => {
-    console.log('[PROC>LOCAL]', message.toString('utf8'));
+    console.log('[PROC>LOCAL]', message);
     if (publicWs.readyState === WebSocket.OPEN) {
       publicWs.send(message);
       console.log('[LOCAL>WSS]', '公開サーバーに送信', message);
