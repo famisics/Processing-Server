@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "commonjs",
   "scripts": {
-    "start": "node server/local.js",
+    "start": "node server/localhost.js",
     "wss": "node server/secure.js"
   },
   "dependencies": {
