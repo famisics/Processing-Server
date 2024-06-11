@@ -14,7 +14,7 @@ wss.on('connection', (ws) => {
   console.log('[wss] ローカルサーバーが接続されました');
 
   ws.on('message', (message) => {
-    console.log('[LOCAL>WSS]','受信' , message);
+    console.log('[LOCAL>WSS]', '受信' , message);
     clients.forEach(client => {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
         client.send('deliver', message);

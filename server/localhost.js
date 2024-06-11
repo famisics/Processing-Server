@@ -11,7 +11,7 @@ localWss.on('connection', (ws) => {
   ws.on('message', (message) => {
     console.log('[PROC>LOCAL]', message.toString('utf8'));
     if (publicWs.readyState === WebSocket.OPEN) {
-      publicWs.send(message.toString('utf8'));
+      publicWs.send(message);
       console.log('[LOCAL>WSS]', '公開サーバーに送信', message);
     } else {
       console.log('[LOCAL>WSS]', '公開サーバーに接続できません');
