@@ -1,28 +1,35 @@
-import express from 'express';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
+const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
 
 const app = express();
-const server = createServer(app);
-const io = new Server(server);
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+// WebSocket接続が確立されたときの処理
+wss.on('connection', function connection(ws) {
+  // クライアントからメッセージを受信したときの処理
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+    // 受け取ったメッセージを全クライアントに送信
+    wss.clients.forEach(function each(client) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+        client.send('相手だけに届いてる？:'+message);
+      }
+    });
+  });
+  // クライアントに接続成功メッセージを送信
+  ws.send('Welcome to the WebSocket server!');
 });
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-
-  socket.on('chat message', (msg) => {
-    console.log('message: ' + msg);
-    io.emit('chat message', msg);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
+// ExpressアプリケーションでCSPヘッダーを設定
+app.use((req, res, next) => {
+  res.setHeader('Content-Security-Policy', 'connect-src ws://localhost:8080');
+  next();
 });
 
-server.listen(3000, () => {
-  console.log('server running at http://localhost:3000');
+// サーバーを起動
+server.listen(8080, () => {
+  console.log('WebSocket server is running on ws://localhost:8080');
 });
