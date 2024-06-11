@@ -2,7 +2,7 @@ const WebSocket = require('ws');
 // ローカルサーバーのセットアップ
 const localWss = new WebSocket.Server({ port: 8080 });
 // 公開サーバーへの接続
-const publicWs = new WebSocket('wss://proc.uiro.dev');
+const publicWs = new WebSocket('wss://proc.uiro.dev:443');
 
 // ローカルサーバーの処理
 localWss.on('connection', (ws) => {
