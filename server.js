@@ -18,11 +18,11 @@ wss.on('connection', (ws) => {
     clients.forEach(client => {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
         client.send('DELIVER:'+message);
-        console.log('[WSS>PROC]', 'deliver', message.toString());
+        console.log('[WSS>Client]', 'deliver', message.toString());
       }
       if (client == ws && client.readyState === WebSocket.OPEN) {
         client.send('SUCCESS:'+message);
-        console.log('[WSS>PROC]', 'success', message.toString());
+        console.log('[WSS>Client]', 'success', message.toString());
       }
     });
   });
@@ -32,7 +32,7 @@ wss.on('connection', (ws) => {
   });
 });
 
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 8080;
 server.listen(PORT, () => {
   console.log(`[wss] 公開サーバーが ${PORT} で無事起動しました`);
 });
