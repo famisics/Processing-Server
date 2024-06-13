@@ -10,6 +10,7 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 let clients = [];
+let deliverCount = 0;
 
 wss.on('connection', (ws) => {
   clients.push(ws);
@@ -17,14 +18,18 @@ wss.on('connection', (ws) => {
   ws.on('message', (message) => {
     clients.forEach(client => {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send('DELIVER:'+message);
-        console.log('[WSS>Client]', 'deliver', message.toString());
+        client.send('DELIVER:' + message);
+        deliverCount++;
       }
       if (client == ws && client.readyState === WebSocket.OPEN) {
         client.send('SUCCESS:'+message);
-        console.log('[WSS>Client]', 'success', message.toString());
+        console.log('[WSS>Client]', '成功通知', message.toString());
       }
     });
+    if (deliverCount > 0) {
+      console.log('[WSS>Client]', '配送 x'+deliverCount, message.toString());
+    }
+    deliverCount = 0;
   });
   ws.on('close', () => {
     clients = clients.filter(client => client !== ws);
